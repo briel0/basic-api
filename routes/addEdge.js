@@ -1,24 +1,16 @@
 import express from 'express'
-import {PrismaClient} from '@prisma/client'
+import prisma from '../prismaSetup.js'
 
-async function nodeCheck(label){
-    const check = await prisma.node.findUnique({where: {label}})
-    return !!check
-}
+const router = express.Router()
 
-const prisma = new PrismaClient()
-
-const app = express()
-
-app.use(express.json())
-
-app.post('/standard', async (req, res) => {
+router.post('/standard', async (req, res) => {
 
     const {u, v} = req.body
 
-    const edge = await prisma.edge.findUnique({where: {u_v: {u : u, v : v}}}) 
+    const inEdge = await prisma.edge.findUnique({where: {u_v: {u : u, v : v}}}) 
+    const outEdge = await prisma.edge.findUnique({where: {u_v: {u : v, v : u}}}) 
 
-    if(edge){
+    if(inEdge || outEdge){
         res.send(`An edge between ${u} and ${v} already exists.\n`);
         return
     }
@@ -41,4 +33,4 @@ app.post('/standard', async (req, res) => {
     res.send(`Edge added between ${u} and ${v}.\n`);
 })
 
-app.listen(3000);
+export default router
