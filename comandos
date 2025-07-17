@@ -1,0 +1,2 @@
+npx prisma generate -> liga o prisma
+npx prisma studio -> telinha no navegador

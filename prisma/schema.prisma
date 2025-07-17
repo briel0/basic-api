@@ -1,0 +1,21 @@
+generator client{
+  provider = "prisma-client-js"
+}
+
+datasource db{
+  provider = "mongodb"
+  url = env("DATABASE_URL")
+}
+
+model Node{
+    id String @id @map("_id") @default(auto()) @db.ObjectId
+    label Int @unique
+    adj Int[]
+}
+
+model Edge{
+    id String  @id @map("_id") @default(auto()) @db.ObjectId
+    u Int
+    v Int
+    @@unique([u, v]) //par único
+}
